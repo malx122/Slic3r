@@ -44,12 +44,29 @@ sub new {
         },
         print => {
             title => 'Print settings',
-            options => [qw(perimeters solid_layers fill_density fill_angle fill_pattern solid_fill_pattern randomize_start support_material support_material_tool)],
+            options => [qw(perimeters solid_layers fill_density fill_angle fill_pattern solid_fill_pattern randomize_start )],
         },
         retract => {
             title => 'Retraction',
             options => [qw(retract_length retract_lift retract_speed retract_restart_extra retract_before_travel)],
         },
+        support => {
+        	title => 'Support material',
+        	options => [qw(support_material support_material_tool support_material_distance)]
+        },
+        support_fill => {
+        	title => 'Fill for all middle layers',
+        	options => [qw(support_material_lastlayer_pattern support_material_lastlayer_density)]
+        },
+        support_firstlayer => {
+        	title => 'First layer (only if layer 0)',
+        	options => [qw(support_material_firstlayer_pattern support_material_firstlayer_density)]
+        },
+        support_lastlayer => {
+        	title => 'Last layer (the "breakoff" layer)',
+        	options => [qw(support_material_lastlayer_pattern support_material_lastlayer_density)]
+        },
+        
         cooling => {
             title => 'Cooling',
             options => [qw(cooling min_fan_speed max_fan_speed bridge_fan_speed fan_below_layer_time slowdown_below_layer_time min_print_speed disable_fan_first_layers fan_always_on)],
@@ -110,6 +127,7 @@ sub new {
     my @tabs = (
         $make_tab->([qw(accuracy skirt retract)], [qw(print notes)]),
         $make_tab->([qw(cooling)]),
+        $make_tab->([qw(support support_fill support_firstlayer support_lastlayer)]),
         $make_tab->([qw(printer filament)], [qw(print_speed speed)]),
         $make_tab->([qw(gcode)]),
         $make_tab->([qw(extrusion other sequential_printing)], [qw(output)]),
@@ -118,9 +136,10 @@ sub new {
     $tabpanel->AddPage(Slic3r::GUI::Plater->new($tabpanel), "Plater");
     $tabpanel->AddPage($tabs[0], "Print Settings");
     $tabpanel->AddPage($tabs[1], "Cooling");
-    $tabpanel->AddPage($tabs[2], "Printer and Filament");
-    $tabpanel->AddPage($tabs[3], "G-code");
-    $tabpanel->AddPage($tabs[4], "Advanced");
+    $tabpanel->AddPage($tabs[2], "Support");
+    $tabpanel->AddPage($tabs[3], "Printer and Filament");
+    $tabpanel->AddPage($tabs[4], "G-code");
+    $tabpanel->AddPage($tabs[5], "Advanced");
         
     my $buttons_sizer;
     {

@@ -121,8 +121,6 @@ our $solid_fill_pattern = 'rectilinear';
 our $fill_density       = 0.4;  # 1 = 100%
 our $fill_angle         = 45;
 our $randomize_start    = 1;
-our $support_material   = 0;
-our $support_material_tool = 0;
 our $start_gcode = "G28 ; home all axes";
 our $end_gcode = <<"END";
 M104 S0 ; turn off temperature
@@ -130,6 +128,18 @@ G28 X0  ; home X axis
 M84     ; disable motors
 END
 our $layer_gcode        = '';
+
+# support material
+our $support_material   = 0;
+our $support_material_tool = 0;
+our $support_material_distance = 3; # mm
+our $support_material_pattern = 'honeycomb';
+our $support_material_density = 0.2; #1 = 100%
+our $support_material_firstlayer_pattern = 'honeycomb';
+our $support_material_firstlayer_density = 0.2; #1 = 100%
+our $support_material_lastlayer_pattern = 'honeycomb';
+our $support_material_lastlayer_density = 0.2; #1 = 100%
+
 
 # retraction options
 our $retract_length         = 1;    # mm

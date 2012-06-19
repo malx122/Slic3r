@@ -274,18 +274,6 @@ our $Options = {
         cli     => 'randomize-start',
         type    => 'bool',
     },
-    'support_material' => {
-        label   => 'Generate support material',
-        cli     => 'support-material',
-        type    => 'bool',
-    },
-    'support_material_tool' => {
-        label   => 'Tool used to extrude support material',
-        cli     => 'support-material-tool=i',
-        type    => 'select',
-        values  => [0,1],
-        labels  => [qw(Primary Secondary)],
-    },
     'start_gcode' => {
         label   => 'Start G-code',
         cli     => 'start-gcode=s',
@@ -326,6 +314,63 @@ our $Options = {
         serialize   => sub { join '; ', @{$_[0]} },
         deserialize => sub { [ split /\s*;\s*/, $_[0] ] },
     },
+    
+    # support material
+    'support_material' => {
+        label   => 'Generate support material',
+        cli     => 'support-material',
+        type    => 'bool',
+    },
+    'support_material_tool' => {
+        label   => 'Tool used to extrude support material',
+        cli     => 'support-material-tool=i',
+        type    => 'select',
+        values  => [0,1],
+        labels  => [qw(Primary Secondary)],
+    },    
+    'support_material_distance' => {
+        label   => 'Distance to support material (mm)',
+        cli     => 'retract-length=f',
+        type    => 'f',
+    },
+    'support_material_pattern' => {
+        label   => 'Fill pattern',
+        cli     => 'support-material-pattern=s',
+        type    => 'select',
+        values  => [qw(rectilinear line concentric honeycomb hilbertcurve archimedeanchords octagramspiral)],
+        labels  => [qw(rectilinear line concentric honeycomb), 'hilbertcurve (slow)', 'archimedeanchords (slow)', 'octagramspiral (slow)'],
+    },
+    'support_material_density' => {
+        label   => 'Density (1 = 100%)',
+        cli     => 'support-material-density=f',
+        type    => 'f',
+    },
+    'support_material_firstlayer_pattern' => {
+        label   => 'Fill pattern',
+        cli     => 'support-material-firstlayer-pattern=s',
+        type    => 'select',
+        values  => [qw(rectilinear line concentric honeycomb hilbertcurve archimedeanchords octagramspiral)],
+        labels  => [qw(rectilinear line concentric honeycomb), 'hilbertcurve (slow)', 'archimedeanchords (slow)', 'octagramspiral (slow)'],
+    },
+    'support_material_firstlayer_density' => {
+        label   => 'Density (1 = 100%)',
+        cli     => 'support-material-firstlayer-density=f',
+        type    => 'f',
+    },
+    'support_material_lastlayer_pattern' => {
+        label   => 'Fill pattern',
+        cli     => 'support-material-lastlayer-pattern=s',
+        type    => 'select',
+        values  => [qw(rectilinear line concentric honeycomb hilbertcurve archimedeanchords octagramspiral)],
+        labels  => [qw(rectilinear line concentric honeycomb), 'hilbertcurve (slow)', 'archimedeanchords (slow)', 'octagramspiral (slow)'],
+    },
+    'support_material_lastlayer_density' => {
+        label   => 'Density (1 = 100%)',
+        cli     => 'support-material-lastlayer-density=f',
+        type    => 'f',
+    },
+    
+    
     
     # retraction options
     'retract_length' => {
@@ -709,6 +754,10 @@ sub validate {
         if $Slic3r::extruder_clearance_radius <= 0;
     die "Invalid value for --extruder-clearance-height\n"
         if $Slic3r::extruder_clearance_height <= 0;
+        
+    # support material
+    die "Invalid value for --support-material-distance"
+    	if $Slic3r::support_material_distance <= 0;
     
     $Slic3r::first_layer_temperature //= $Slic3r::temperature;          #/
     $Slic3r::first_layer_bed_temperature //= $Slic3r::bed_temperature;  #/
