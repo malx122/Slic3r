@@ -486,8 +486,7 @@ sub generate_support_material {
     my $self = shift;
     my %params = @_;
     
-    my $distance_from_object = 3; # mm
-    
+
     # determine unsupported surfaces
     my %layers = ();
     my @unsupported_expolygons = ();
@@ -499,7 +498,7 @@ sub generate_support_material {
             if (@b) {
                 @c = @{diff_ex(
                     [ map @$_, @b ],
-                    [ map @$_, map $_->expolygon->offset_ex(scale $distance_from_object), @{$layer->slices} ],
+                    [ map @$_, map $_->expolygon->offset_ex(scale $Slic3r::support_material_distance), @{$layer->slices} ],
                 )};
                 $layers{$i} = [@c];
             }
@@ -519,7 +518,12 @@ sub generate_support_material {
             @a = map $_->expolygon->clone, grep $_->surface_type == S_TYPE_BOTTOM, @{$layer->slices};
             
             $_->simplify(scale $layer->flow->spacing * 3) for @a;
+      
             push @unsupported_expolygons, @a;
+      
+            Slic3r::debugf "unsupported_expolygon count layer %d: %d, for a total of %d\n",
+                $i, scalar(@a), scalar(@unsupported_expolygons);
+       
         }
     }
     return if !@unsupported_expolygons;
